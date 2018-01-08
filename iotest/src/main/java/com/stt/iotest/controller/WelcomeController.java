@@ -11,6 +11,7 @@ public class WelcomeController {
 	
 	@RequestMapping("/")
 	public String homeHandler(){
+		log.info("hello there");
 		return "welcome";
 	}
 }
