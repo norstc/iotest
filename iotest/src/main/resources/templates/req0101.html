@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="/images/favicon.ico"/>
+
+    <title>IOTEST</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet" />
+
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">接口测试工具</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">MCMS</a></li>
+            <li><a href="#">BCSS</a></li>
+            <li><a href="req0201">POMP</a></li>
+            <li class="active"><a href="req0101">CSS1/CSS2</a></li>
+            <li><a href="#">POP</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="查找.."/>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">充值记录查询接口</a></li>
+            <li><a href="#">消费记录查询接口</a></li>
+            <li><a href="#">用户帐号查询接口</a></li>
+            <li><a href="#">业务，渠道暂停请求接口</a></li>
+          </ul>
+          
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">充值记录查询接口</h1>
+
+            <form  th:object="${xmlRequest}" id="io0101"  method="post" role="form">
+            
+                <div class="form-group">
+                    <label for="req_header" >XML消息头</label>
+                    <br />
+                    <textarea rows="10"  cols="150 "  name="xmlHeader" th:field="${xmlRequest.xmlHeader}" form="io0101"></textarea>
+                 </div>
+                <div class="form-group">
+                    <label for="req_body" >XML消息主体</label>
+                    <br />
+                   <textarea rows="10"  cols="150"  name="xmlBody" th:field="${xmlRequest.xmlBody}" form="io0101"></textarea>
+                  </div>
+                
+            
+                
+                <button type="submit" class="btn btn-default" >提交查询</button>
+            </form>
+            
+            
+        </div>
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">XML结果</h1>
+            <br/>
+            <textarea rows="10"  cols="150"  name="xmlResult" th:field="${xmlRequest.xmlResult}" ></textarea>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+  </body>
+</html>

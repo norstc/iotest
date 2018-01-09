@@ -13,59 +13,60 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.stt.iotest.model.XmlRequest;
-import com.stt.iotest.model.XmlRequestRepo;
+import com.stt.iotest.model.JsonRequest;
 
 @Controller
-public class WelcomeController {
-	private static final Logger log = LoggerFactory.getLogger(WelcomeController.class);
-	
-
-	@RequestMapping("/")
-	public String homeHandler(){
-		log.info("hello there");
-		return "welcome";
-	}
-	//req0101显示表单
-	@RequestMapping(value="/req0101",method=RequestMethod.GET)
-	public String req0101Handler(Map<String, Object> model){
-		 XmlRequest xmlRequest = new XmlRequest(); 
-		 model.put("xmlRequest", xmlRequest);
-		return "req0101";
+public class PompController {
+	private static final Logger log = LoggerFactory.getLogger(PompController.class);
+	//req0201 GET
+	@RequestMapping(value="/req0201",method=RequestMethod.GET)
+	public String req0201Handler(Map<String,Object> model){
+		JsonRequest jsonRequest = new JsonRequest();
+		model.put("jsonRequest", jsonRequest);
+		return "req0201";
 	}
 	
-	//req0101提交表单
-	@RequestMapping(value="/req0101",method=RequestMethod.POST)
-	public String processReq0101(@Valid XmlRequest xmlRequest, BindingResult result){
+	//req0201 post
+	@RequestMapping(value="/req0201", method=RequestMethod.POST)
+	public String processReq0201(@Valid JsonRequest jsonRequest, BindingResult result){
 		if(result.hasErrors()){
 			log.info("form error: " + result.toString());
-			result.rejectValue("xmlRequest", "error.xmlRequest","无效的请求");
-			return "req0101";
+			result.rejectValue("jsonRequest", "error.jsonRequest","无效的请求");
+			return "req0201";
 		}
-		log.info("header is : " + xmlRequest.getXmlHeader());
-		log.info("body is : " + xmlRequest.getXmlBody());
-		//向目标发送真实的请求
-		String xmlRes = getXmlRes(xmlRequest.getXmlHeader(), xmlRequest.getXmlBody());
-		return "req0101";
+		log.info("form - json request url: " + jsonRequest.getJsonRequestUrl());
+		log.info("form - json request data: " + jsonRequest.getJsonRequestData());
+		String jsonRes = getJsonRes( jsonRequest.getJsonRequestUrl(),jsonRequest.getJsonRequestData());
+		if(jsonRes.equals(null)){
+			log.info("nothing get back!");
+			return "req0201";
+		}else{
+			jsonRequest.setJsonResponse(jsonRes);
+			return "req0201";
+		}
+		
 	}
-	private String getXmlRes(String xmlHeader, String xmlBody) {
+
+	private String getJsonRes(String jsonRequestUrl, String jsonRequestData) {
 		String USER_AGENT = "Mozilla/5.0";
-		String GET_URL="http://221.181.100.71:8123/newcss/MN/mn.jsp";
-		String POST_URL="http://221.181.100.71:8123/newcss/ReceiveMNXml.do";
-		String POST_PARAMS = "xmlheader="+xmlHeader + "&" + "xmlbody="+ xmlBody;
+		String CONTENT_TYPE="application/json";
+		String POST_URL=jsonRequestUrl;
+		String POST_PARAMS = jsonRequestData;
+		if(jsonRequestUrl.equals(null)){
+			return null;
+		}
 		try {
 			URL url = new URL(POST_URL);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setConnectTimeout(15000);
 			connection.setRequestProperty("User-Agent", USER_AGENT);
+			connection.setRequestProperty("Content-Type", CONTENT_TYPE);
 			
 			connection.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
@@ -77,8 +78,7 @@ public class WelcomeController {
 			String responseMessage = connection.getResponseMessage();
 			
 			log.info("send 'post' to URL: " + POST_URL);
-			log.info("xmlheader: " + xmlHeader);
-			log.info("xmlbody: " + xmlBody);
+
 			log.info("response code is " + responseCode);
 			log.info("response message is " + responseMessage);
 			
@@ -94,6 +94,7 @@ public class WelcomeController {
 				}
 				in.close();
 				log.info("response is: " + response.toString());
+				return response.toString();
 				
 			}
 			
@@ -109,4 +110,6 @@ public class WelcomeController {
 		}
 		return null;
 	}
+	
 }
+
