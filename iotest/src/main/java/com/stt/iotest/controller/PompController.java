@@ -13,16 +13,26 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.stt.iotest.model.JsonRequest;
+import com.stt.iotest.model.JsonRequestService;
+import com.stt.iotest.model.JsonRequestServiceImpl;
 
 @Controller
 public class PompController {
 	private static final Logger log = LoggerFactory.getLogger(PompController.class);
+	private JsonRequestService jsonRequestService;
+	
+	@Autowired
+	public void setJsonRequestService(JsonRequestService jsonRequestService){
+		this.jsonRequestService = jsonRequestService;
+	}
+	
 	//req0201 GET
 	@RequestMapping(value="/req0201",method=RequestMethod.GET)
 	public String req0201Handler(Map<String,Object> model){
@@ -47,6 +57,7 @@ public class PompController {
 			return "req0201";
 		}else{
 			jsonRequest.setJsonResponse(jsonRes);
+			this.jsonRequestService.saveOrUpdate(jsonRequest);
 			return "req0201";
 		}
 		

@@ -9,15 +9,15 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name="xml_request")
 public class XmlRequest  extends NamedEntity{
-	@Column(name = "xml_header")
+	@Column(name = "xml_header", length=2048)
 	@NotEmpty
 	private String xmlHeader;
 	
-	@Column(name = "xml_body")
+	@Column(name = "xml_body", length=2048)
 	@NotEmpty
 	private String xmlBody;
 
-	@Column(name = "xml_result")
+	@Column(name = "xml_result", length=2048)
 	private String xmlResult;
 	
 	

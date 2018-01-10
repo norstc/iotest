@@ -7,13 +7,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name="json_request")
 public class JsonRequest  extends NamedEntity{
-	@Column(name="json_request_url")
+	@Column(name="json_request_url", length=2048)
 	private String jsonRequestUrl;
 	
-	@Column(name = "json_request_data")
+	@Column(name = "json_request_data", length=2048)
 	private String jsonRequestData;
 	
-	@Column(name = "json_response")
+	@Column(name = "json_response", length=2048)
 	private String jsonResponse;
 
 	
