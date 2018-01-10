@@ -85,12 +85,10 @@ public class PompController {
 			URL url = new URL(POST_URL);
 			
 			trustAllHosts();
-			log.info("url222 ");
+
 			connection = (HttpURLConnection) url.openConnection();
-			
-			log.info("url111 ");
+			//判断是否为https
 			if(url.getProtocol().toLowerCase().equals("https")){
-				log.info("https ");
 				httpsConnection = (HttpsURLConnection)url.openConnection();
 				HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier(){
 					public boolean verify(String hostname, SSLSession session){
@@ -101,8 +99,7 @@ public class PompController {
 				
 				connection = httpsConnection;
 			}else{
-				log.info("http ");
-				
+				//http的保持原样
 			}
 			log.info("connection is ok");
 			connection.setRequestProperty("Accept-Charset", "UTF-8");
@@ -173,7 +170,6 @@ public class PompController {
 		}};
 		
 		try{
-			log.info(TAG);
 			SSLContext sc = SSLContext.getInstance("TLS");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
