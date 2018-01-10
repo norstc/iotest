@@ -9,6 +9,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Table(name="xml_request")
 public class XmlRequest  extends NamedEntity{
+	@Column(name="xml_request_url", length=2048)
+	private String xmlRequestUrl;
+	
 	@Column(name = "xml_header", length=2048)
 	@NotEmpty
 	private String xmlHeader;
@@ -21,6 +24,14 @@ public class XmlRequest  extends NamedEntity{
 	private String xmlResult;
 	
 	
+	public String getXmlRequestUrl() {
+		return xmlRequestUrl;
+	}
+
+	public void setXmlRequestUrl(String xmlRequestUrl) {
+		this.xmlRequestUrl = xmlRequestUrl;
+	}
+
 	public String getXmlResult() {
 		return xmlResult;
 	}

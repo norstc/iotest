@@ -64,14 +64,20 @@
             <form  th:object="${xmlRequest}" id="io0101"  method="post" role="form">
             
                 <div class="form-group">
+                    <label for="xml_request_url" >URL链接</label>
+                    <br />
+                    <textarea rows="1"  cols="150 "  name="xmlRequestUrl" th:field="${xmlRequest.xmlRequestUrl}" form="io0201"></textarea>
+                 </div>
+                 
+                <div class="form-group">
                     <label for="req_header" >XML消息头</label>
                     <br />
-                    <textarea rows="10"  cols="150 "  name="xmlHeader" th:field="${xmlRequest.xmlHeader}" form="io0101"></textarea>
+                    <textarea rows="6"  cols="150"  name="xmlHeader" th:field="${xmlRequest.xmlHeader}" form="io0101"></textarea>
                  </div>
                 <div class="form-group">
                     <label for="req_body" >XML消息主体</label>
                     <br />
-                   <textarea rows="10"  cols="150"  name="xmlBody" th:field="${xmlRequest.xmlBody}" form="io0101"></textarea>
+                   <textarea rows="6"  cols="150"  name="xmlBody" th:field="${xmlRequest.xmlBody}" form="io0101"></textarea>
                   </div>
                 
             
