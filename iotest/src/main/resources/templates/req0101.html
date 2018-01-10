@@ -59,7 +59,7 @@
           
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">充值记录查询接口</h1>
+          <h3 class="page-header">充值记录查询接口</h3>
 
             <form  th:object="${xmlRequest}" id="io0101"  method="post" role="form">
             
@@ -83,8 +83,7 @@
         </div>
         
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">XML结果</h1>
-            <br/>
+            <h3 class="page-header">XML结果</h3>
             <textarea rows="10"  cols="150"  name="xmlResult" th:field="${xmlRequest.xmlResult}" ></textarea>
           
         </div>

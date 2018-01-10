@@ -2,6 +2,7 @@ package com.stt.iotest.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
@@ -13,7 +14,8 @@ public class JsonRequest  extends NamedEntity{
 	@Column(name = "json_request_data", length=2048)
 	private String jsonRequestData;
 	
-	@Column(name = "json_response", length=2048)
+	@Lob
+	@Column(name = "json_response")
 	private String jsonResponse;
 
 	

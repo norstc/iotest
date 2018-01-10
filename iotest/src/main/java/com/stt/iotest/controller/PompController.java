@@ -7,8 +7,16 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -68,12 +76,35 @@ public class PompController {
 		String CONTENT_TYPE="application/json";
 		String POST_URL=jsonRequestUrl;
 		String POST_PARAMS = jsonRequestData;
+		HttpURLConnection connection = null;
+		HttpsURLConnection httpsConnection = null;
 		if(jsonRequestUrl.equals(null)){
 			return null;
 		}
 		try {
 			URL url = new URL(POST_URL);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			
+			trustAllHosts();
+			log.info("url222 ");
+			connection = (HttpURLConnection) url.openConnection();
+			
+			log.info("url111 ");
+			if(url.getProtocol().toLowerCase().equals("https")){
+				log.info("https ");
+				httpsConnection = (HttpsURLConnection)url.openConnection();
+				HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier(){
+					public boolean verify(String hostname, SSLSession session){
+						return true;
+					}
+				};
+				httpsConnection.setHostnameVerifier(DO_NOT_VERIFY );
+				
+				connection = httpsConnection;
+			}else{
+				log.info("http ");
+				
+			}
+			log.info("connection is ok");
 			connection.setRequestProperty("Accept-Charset", "UTF-8");
 			connection.setRequestMethod("POST");
 			connection.setConnectTimeout(15000);
@@ -117,11 +148,40 @@ public class PompController {
 			log.info("IO error");
 			e.printStackTrace();
 		}catch (Exception e){
-			log.info("error");
+			log.info("unknown error");
 			e.printStackTrace();
 		}
 		return null;
 	}
+
+	/**
+	 * trust every server  - don't check certificate
+	 */
+	private void trustAllHosts() {
+		String TAG = "trustAllHosts";
+		X509TrustManager[] trustAllCerts = new X509TrustManager[] { new X509TrustManager(){
+			public java.security.cert.X509Certificate[] getAcceptedIssuers(){
+				return new java.security.cert.X509Certificate[] {};
+			}
+			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException{
+				log.info(TAG, "checkClientTrusted");
+			}
+			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+				log.info(TAG, "checkServerTrusted");
+				
+			}
+		}};
+		
+		try{
+			log.info(TAG);
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		}catch (Exception e){
+			log.info(TAG, "something wrong");
+			e.printStackTrace();
+		}
 	
+	}
 }
 
