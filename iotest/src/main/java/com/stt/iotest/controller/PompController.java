@@ -63,6 +63,7 @@ public class PompController {
 		try {
 			URL url = new URL(POST_URL);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestProperty("Accept-Charset", "UTF-8");
 			connection.setRequestMethod("POST");
 			connection.setConnectTimeout(15000);
 			connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -86,7 +87,7 @@ public class PompController {
 			
 			//返回200
 			if(responseCode == HttpURLConnection.HTTP_OK){
-				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(),"UTF-8"));
 				String inputLine;
 				StringBuffer response = new StringBuffer();
 				while((inputLine = in.readLine()) != null){
