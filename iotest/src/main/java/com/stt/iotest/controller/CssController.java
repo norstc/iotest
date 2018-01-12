@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,11 @@ import com.stt.iotest.model.XmlRequestService;
 public class CssController {
 	private static final Logger log = LoggerFactory.getLogger(CssController.class);
 	private XmlRequestService xmlRequestService;
+	
+	@Autowired
+	public void setXmlRequestService(XmlRequestService xmlRequestService){
+		this.xmlRequestService = xmlRequestService;
+	}
 	
 	//req0101显示表单
 		@RequestMapping(value="/req0101",method=RequestMethod.GET)
@@ -42,27 +48,78 @@ public class CssController {
 				result.rejectValue("xmlRequest", "error.xmlRequest","无效的请求");
 				return "req0101";
 			}
+			log.info("URL is : " + xmlRequest.getXmlRequestUrl());
 			log.info("header is : " + xmlRequest.getXmlHeader());
 			log.info("body is : " + xmlRequest.getXmlBody());
 			//向目标发送真实的请求
-			String xmlRes = getXmlRes(xmlRequest.getXmlHeader(), xmlRequest.getXmlBody());
-			return "req0101";
+			String xmlRes = getXmlRes(xmlRequest.getXmlRequestUrl(),xmlRequest.getXmlHeader(), xmlRequest.getXmlBody());
+			if(xmlRes.equals(null)){
+				log.info("nothing get back!");
+				return "req0101";
+			}else{
+				log.info("xmlRes is : " + xmlRes);
+				xmlRequest.setXmlResult(xmlRes);
+				this.xmlRequestService.saveOrUpdate(xmlRequest);
+				return "req0101";
+			}
+			
 		}
-		private String getXmlRes(String xmlHeader, String xmlBody) {
+		private String getXmlRes(String xmlRequestUrl, String xmlHeader, String xmlBody) {
 			String USER_AGENT = "Mozilla/5.0";
-			String GET_URL="http://221.181.100.71:8123/newcss/MN/mn.jsp";
-			String POST_URL="http://221.181.100.71:8123/newcss/ReceiveMNXml.do";
-			String POST_PARAMS = "xmlheader="+xmlHeader + "&" + "xmlbody="+ xmlBody;
+			//String GET_URL="http://221.181.100.71:8123/newcss/MN/mn.jsp";
+			//String POST_URL="http://221.181.100.71:8123/newcss/ReceiveMNXml.do";
+			String POST_URL = xmlRequestUrl;
+			
+			//换行
+			String LINE_END="\r\n";
+			//分隔符
+			String SEPRATOR = "---1661047269137";
+			//第一个参数名
+			String HEADER_NAME ="Content-Disposition: form-data; name=\"xmlhead\"";
+			//第二个参数名
+			String BODY_NAME  = "Content-Disposition: form-data; name=\"xmlbody\"";
+			
+			//构建post form  multipart 有固定的格式
+			StringBuffer sb  = new StringBuffer();
+			//开头是 -- 加 分隔符
+			sb.append("--").append(SEPRATOR).append(LINE_END);
+			//第一个参数名
+			sb.append(HEADER_NAME);
+			//正式参数前两个空行
+			sb.append(LINE_END).append(LINE_END);
+			//真实的参数
+			sb.append(xmlHeader);
+			//结束的空行
+			sb.append(LINE_END);
+			//第二个参数开头，仍然是 -- 加 分隔符 加 换行
+			sb.append("--").append(SEPRATOR).append(LINE_END);
+			//参数名
+			sb.append(BODY_NAME);
+			//正式参数前两个空行
+			sb.append(LINE_END).append(LINE_END);
+			//正式的参数
+			sb.append(xmlBody);
+			//结束换行
+			sb.append(LINE_END);
+			//整体结束：-- 加 分隔符 加 -- 加 换行
+			sb.append("--").append(SEPRATOR).append("--").append(LINE_END);
+			
+			String POST_PARAMS = sb.toString();
+			if(POST_URL.isEmpty() || POST_PARAMS.isEmpty()){
+				return null;
+			}
+			log.info("POST_PARAMS : " +POST_PARAMS);
 			try {
 				URL url = new URL(POST_URL);
 				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestMethod("POST");
 				connection.setConnectTimeout(15000);
 				connection.setRequestProperty("User-Agent", USER_AGENT);
+				connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=---1661047269137");
 				
 				connection.setDoOutput(true);
 				DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-				wr.writeBytes(POST_PARAMS);
+				wr.write(POST_PARAMS.getBytes());
 				wr.flush();
 				wr.close();
 				
