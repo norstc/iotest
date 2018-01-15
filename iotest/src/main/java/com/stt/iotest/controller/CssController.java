@@ -136,7 +136,7 @@ public class CssController {
 				
 				//返回200
 				if(responseCode == HttpURLConnection.HTTP_OK){
-					BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+					BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(),"UTF-8"));
 					String inputLine;
 					StringBuffer response = new StringBuffer();
 					while((inputLine = in.readLine()) != null){
@@ -144,6 +144,7 @@ public class CssController {
 					}
 					in.close();
 					log.info("response is: " + response.toString());
+					return response.toString();
 					
 				}
 				
