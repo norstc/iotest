@@ -70,7 +70,23 @@ public class PompController {
 		}
 		
 	}
+	
+	//req0201auto GET
+	@RequestMapping(value="/req0201auto", method=RequestMethod.GET)
+	public String req0201autoHandler(Map<String,Object> model) {
+		JsonRequest jsonRequest = new JsonRequest();
+		model.put("jsonRequest", jsonRequest);
+		return "req0201auto";
+	}
 
+	//req0201auto POST
+	@RequestMapping(value="/req0201auto", method=RequestMethod.POST)
+	public String req0201autoProcess(@Valid JsonRequest jsonRequest) {
+		log.info("req0201auto: " + jsonRequest.getName());
+		return "req0201auto";
+	}
+	
+	
 	private String getJsonRes(String jsonRequestUrl, String jsonRequestData) {
 		String USER_AGENT = "Mozilla/5.0";
 		String CONTENT_TYPE="application/json";

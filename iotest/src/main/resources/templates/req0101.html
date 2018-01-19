@@ -34,11 +34,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">MCMS</a></li>
-            <li><a href="#">BCSS</a></li>
             <li><a href="req0201">POMP</a></li>
             <li class="active"><a href="req0101">CSS1/CSS2</a></li>
-            <li><a href="#">POP</a></li>
           </ul>
           <form class="navbar-form navbar-right">
             <input type="text" class="form-control" placeholder="查找.."/>
@@ -51,15 +48,15 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">充值记录查询接口</a></li>
-            <li><a href="#">消费记录查询接口</a></li>
-            <li><a href="#">用户帐号查询接口</a></li>
-            <li><a href="#">业务，渠道暂停请求接口</a></li>
+            <li class="active"><a href="#">充值记录查询接口（HTTP/XML）</a></li>
+            <li><a href="#">消费记录查询接口（HTTP/XML）</a></li>
+            <li><a href="#">用户帐号查询接口（HTTP/XML）</a></li>
+            <li><a href="#">业务，渠道暂停请求接口（HTTP/XML）</a></li>
           </ul>
           
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h3 class="page-header">充值记录查询接口</h3>
+          <h3 class="page-header">充值记录查询接口（HTTP/XML）</h3>
 
             <form  th:object="${xmlRequest}" id="io0101"  method="post" role="form">
             
