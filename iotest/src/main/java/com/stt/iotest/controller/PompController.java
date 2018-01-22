@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -22,11 +23,14 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stt.iotest.model.JsonRequest;
 import com.stt.iotest.model.JsonRequestService;
 import com.stt.iotest.model.JsonRequestServiceImpl;
@@ -59,12 +63,25 @@ public class PompController {
 		}
 		log.info("form - json request url: " + jsonRequest.getJsonRequestUrl());
 		log.info("form - json request data: " + jsonRequest.getJsonRequestData());
+		//String to Json
+		byte[] mapData = jsonRequest.getJsonRequestData().getBytes();
+		Map<String, String> myMap = new HashMap<String, String>();
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			myMap = objectMapper.readValue(mapData, HashMap.class);
+			log.info("myMap is: " + myMap.toString());
+			log.info("interface name is : " + myMap.get("interfaceName"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String jsonRes = getJsonRes( jsonRequest.getJsonRequestUrl(),jsonRequest.getJsonRequestData());
 		if(jsonRes.equals(null)){
 			log.info("nothing get back!");
 			return "req0201";
 		}else{
 			jsonRequest.setJsonResponse(jsonRes);
+			jsonRequest.setName(myMap.get("interfaceName"));
 			this.jsonRequestService.saveOrUpdate(jsonRequest);
 			return "req0201";
 		}
@@ -81,12 +98,24 @@ public class PompController {
 
 	//req0201auto POST
 	@RequestMapping(value="/req0201auto", method=RequestMethod.POST)
-	public String req0201autoProcess(@Valid JsonRequest jsonRequest) {
+	public String req0201autoProcess(@Valid JsonRequest jsonRequest, Model model) {
 		log.info("req0201auto: " + jsonRequest.getName());
+		String testName = jsonRequest.getName();
+		String req0201AutoTestResult = doReq0201AutoTest(testName);
+		model.addAttribute("result",req0201AutoTestResult);
 		return "req0201auto";
 	}
 	
 	
+	private  String doReq0201AutoTest(String testName) {
+		if(testName.equals("req0201a1")) {
+			return "PASS";
+		}else {
+			return "NG";
+		}
+		
+	}
+
 	private String getJsonRes(String jsonRequestUrl, String jsonRequestData) {
 		String USER_AGENT = "Mozilla/5.0";
 		String CONTENT_TYPE="application/json";
