@@ -43,4 +43,10 @@ public class JsonRequestServiceImpl implements JsonRequestService{
 		
 	}
 
+	@Override
+	public JsonRequest findFirstByName(String name) {
+		
+		return jsonRequestRepo.findFirstByName(name);
+	}
+
 }

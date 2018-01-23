@@ -8,5 +8,5 @@ public interface JsonRequestService {
 	JsonRequest getById(Integer id);
 	JsonRequest saveOrUpdate(JsonRequest jsonRequest);
 	void delete(Integer id);
-
+	JsonRequest findFirstByName(String name);
 }

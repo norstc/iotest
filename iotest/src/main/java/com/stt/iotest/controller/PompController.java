@@ -101,14 +101,24 @@ public class PompController {
 	public String req0201autoProcess(@Valid JsonRequest jsonRequest, Model model) {
 		log.info("req0201auto: " + jsonRequest.getName());
 		String testName = jsonRequest.getName();
-		String req0201AutoTestResult = doReq0201AutoTest(testName);
+		
+		JsonRequest jsonRequestFromDb = jsonRequestService.findFirstByName(testName);
+		
+		jsonRequest.setJsonRequestUrl(jsonRequestFromDb.getJsonRequestUrl());
+		jsonRequest.setJsonRequestData(jsonRequestFromDb.getJsonRequestData());
+		jsonRequest.setJsonResponse(jsonRequestFromDb.getJsonResponse());
+		
+		String realResponse = getJsonRes(jsonRequestFromDb.getJsonRequestUrl(), jsonRequestFromDb.getJsonRequestData());
+		model.addAttribute("realResponse",realResponse);
+		String req0201AutoTestResult = doReq0201AutoTest(jsonRequestFromDb.getJsonResponse(),realResponse);
 		model.addAttribute("result",req0201AutoTestResult);
 		return "req0201auto";
 	}
 	
 	
-	private  String doReq0201AutoTest(String testName) {
-		if(testName.equals("req0201a1")) {
+	private  String doReq0201AutoTest(String expectedResponse , String realResponse) {
+		if(expectedResponse.equals(realResponse)) {
+			
 			return "PASS";
 		}else {
 			return "NG";
