@@ -77,7 +77,7 @@
             </form>
             
             <div  th:if="${result == 'PASS'}">
-            	<p>测试通过</p>
+            	<p style="color:green">测试通过</p>
             	<br/>
             	<table class="table table-striped">
             		<thead>
@@ -101,7 +101,7 @@
             	</table>
             </div>
             <div th:if="${result == 'NG'}">
-            	<p>测试不通过</p>
+            	<p style="color:red">测试不通过</p>
             	<table class="table table-striped">
             		<thead>
             			<tr>

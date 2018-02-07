@@ -3,6 +3,8 @@ package com.stt.iotest.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.stt.iotest.model.JmsRequest;
+import com.stt.iotest.model.JmsRequestService;
 import com.stt.iotest.model.JsonRequest;
 import com.stt.iotest.model.XmlRequest;
 
@@ -19,4 +21,6 @@ public class CommonBeanConfig {
 		JsonRequest jsonRequest = new JsonRequest();
 		return jsonRequest;
 	}
+	
+	
 }

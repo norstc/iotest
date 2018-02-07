@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stt.iotest.model.JmsRequest;
+import com.stt.iotest.model.JmsRequestService;
 import com.stt.iotest.model.JsonRequest;
 import com.stt.iotest.model.JsonRequestService;
 import com.stt.iotest.model.JsonRequestServiceImpl;
@@ -39,6 +41,12 @@ import com.stt.iotest.model.JsonRequestServiceImpl;
 public class PompController {
 	private static final Logger log = LoggerFactory.getLogger(PompController.class);
 	private JsonRequestService jsonRequestService;
+	private JmsRequestService jmsRequestService;
+	
+	@Autowired
+	public void setJmsRequestService(JmsRequestService jmsRequestService) {
+		this.jmsRequestService = jmsRequestService;
+	}
 	
 	@Autowired
 	public void setJsonRequestService(JsonRequestService jsonRequestService){
@@ -57,7 +65,7 @@ public class PompController {
 	@RequestMapping(value="/req0201", method=RequestMethod.POST)
 	public String processReq0201(@Valid JsonRequest jsonRequest, BindingResult result){
 		if(result.hasErrors()){
-			log.info("form error: " + result.toString());
+			log.info("req0201 form error: " + result.toString());
 			result.rejectValue("jsonRequest", "error.jsonRequest","无效的请求");
 			return "req0201";
 		}
@@ -86,6 +94,25 @@ public class PompController {
 			return "req0201";
 		}
 		
+	}
+	
+	//req0202 GET
+	@RequestMapping(value="/req0202",method=RequestMethod.GET)
+	public String req0202Handler(Map<String,Object> model){
+		JmsRequest jmsRequest = new JmsRequest();
+		model.put("jmsRequest",jmsRequest);
+		return "req0202";
+	}
+	//req0202 POST
+	@RequestMapping(value="/req0202",method=RequestMethod.POST)
+	public String req0202Process(@Valid JmsRequest jmsRequest, BindingResult result) {
+		if(result.hasErrors()) {
+			log.info("req0202 form error:" + result.toString());
+			return "req0202";
+		}
+		log.info("jms request url is : " + jmsRequest.getJmsRequestUrl());
+		log.info("jms request data is : " + jmsRequest.getJmsRequestData());
+		return "req0202";
 	}
 	
 	//req0201auto GET
